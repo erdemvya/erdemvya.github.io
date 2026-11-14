@@ -10,8 +10,6 @@
   <meta property="og:title" content="erdem — erdqc.">
   <meta property="og:description" content="instagram / github / discord">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="assets/avatar.jpg">
-  <link rel="icon" href="assets/avatar.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -110,80 +108,6 @@
       to { opacity: 1; transform: none; }
     }
 
-    .avatar-wrap {
-      position: relative;
-      width: 132px;
-      height: 132px;
-      margin: 0 auto 24px;
-    }
-
-    .avatar-wrap::before {
-      content: "";
-      position: absolute;
-      inset: -22px;
-      z-index: -1;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 255, 255, .13), transparent 68%);
-      filter: blur(8px);
-    }
-
-    .avatar-wrap::after {
-      content: "";
-      position: absolute;
-      inset: -9px;
-      border-radius: 50%;
-      border: 1px dashed rgba(255, 255, 255, .22);
-      animation: spin 26s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .avatar {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, .16);
-      object-fit: cover;
-      object-position: center;
-      filter: saturate(.92) contrast(1.04);
-      box-shadow: 0 18px 45px -18px rgba(0, 0, 0, .9);
-      transition: transform .5s cubic-bezier(.2, .8, .2, 1), filter .5s ease;
-    }
-
-    .avatar-wrap:hover .avatar {
-      transform: scale(1.035);
-      filter: saturate(1) contrast(1.06);
-    }
-
-    .status {
-      position: absolute;
-      right: 5px;
-      bottom: 9px;
-      width: 19px;
-      height: 19px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1px solid var(--line-strong);
-    }
-
-    .status::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #e8e8e4;
-      box-shadow: 0 0 0 0 rgba(255, 255, 255, .45);
-      animation: ping 3.2s ease-out infinite;
-    }
-
-    @keyframes ping {
-      0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, .4); }
-      60%, 100% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
-    }
-
     .name {
       position: relative;
       display: inline-block;
@@ -233,9 +157,10 @@
 
     .tagline {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 4px 8px;
       margin: 14px 0 0;
       font-size: 11.5px;
       letter-spacing: .13em;
@@ -247,6 +172,8 @@
       color: var(--dim);
       transform: translateY(-1px);
     }
+
+    .tagline .album { letter-spacing: .04em; }
 
     .tagline .slash { color: var(--dim); }
 
@@ -519,7 +446,6 @@
     }
 
     @media (max-width: 420px) {
-      .avatar-wrap { width: 116px; height: 116px; margin-bottom: 22px; }
       .socials { gap: 10px; }
       .social { width: 54px; height: 54px; border-radius: 14px; }
       .social svg { width: 22px; height: 22px; }
@@ -542,18 +468,13 @@
   <div class="noise" aria-hidden="true"></div>
 
   <main class="profile" aria-label="erdem profil sayfası">
-    <div class="avatar-wrap">
-      <img class="avatar" src="assets/avatar.jpg" alt="erdem profil fotoğrafı" width="736" height="550">
-      <span class="status" aria-hidden="true"></span>
-    </div>
-
     <h1 class="name" data-text="erdem" aria-label="erdem">erdem</h1>
 
     <p class="tagline">
       <span class="note" aria-hidden="true">&#9834;</span>
       <span>panchiko</span>
       <span class="slash" aria-hidden="true">—</span>
-      <span>deathmetal</span>
+      <span class="album">D&gt;E&gt;A&gt;T&gt;H&gt;M&gt;E&gt;T&gt;A&gt;L</span>
     </p>
 
     <ul class="socials">
@@ -605,7 +526,7 @@
         <span class="intro-caret" aria-hidden="true"></span>
         click to enter
       </button>
-      <p class="intro-note">&#9834; panchiko — deathmetal</p>
+      <p class="intro-note">&#9834; panchiko — D&gt;E&gt;A&gt;T&gt;H&gt;M&gt;E&gt;T&gt;A&gt;L</p>
     </div>
   </div>
 
