@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#060606">
+  <title>erdem — erdqc.</title>
+  <meta name="description" content="erdem'in kişisel sayfası — Instagram, GitHub ve Discord.">
+  <meta property="og:title" content="erdem — erdqc.">
+  <meta property="og:description" content="instagram / github / discord">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/avatar.jpg">
+  <link rel="icon" href="assets/avatar.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060606;
+      --fg: #f4f4f1;
+      --muted: #9d9d97;
+      --dim: #7b7b75;
+      --line: rgba(255, 255, 255, .09);
+      --line-strong: rgba(255, 255, 255, .2);
+      --mx: 50%;
+      --my: 30%;
+      --mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: clamp(28px, 7vw, 64px) 22px clamp(56px, 9vh, 88px);
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--mono);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body.intro-open { overflow: hidden; }
+
+    ::selection { background: #f4f4f1; color: #060606; }
+
+    a, button { -webkit-tap-highlight-color: transparent; }
+
+    /* ---------- background ---------- */
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(620px circle at var(--mx) var(--my), rgba(255, 255, 255, .06), transparent 62%);
+    }
+
+    .bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(900px 620px at 50% 16%, rgba(255, 255, 255, .045), transparent 68%),
+        radial-gradient(120% 85% at 50% 36%, transparent 42%, rgba(0, 0, 0, .72) 100%);
+    }
+
+    .noise {
+      position: fixed;
+      inset: -30%;
+      z-index: 3;
+      opacity: .045;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grain 9s steps(6) infinite;
+    }
+
+    @keyframes grain {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-3%, 2%); }
+      40% { transform: translate(2%, -3%); }
+      60% { transform: translate(-2%, -2%); }
+      80% { transform: translate(3%, 1%); }
+    }
+
+    /* ---------- profile ---------- */
+
+    .profile {
+      position: relative;
+      z-index: 2;
+      width: min(430px, 100%);
+      text-align: center;
+      animation: rise .8s cubic-bezier(.2, .8, .2, 1) both .1s;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 132px;
+      height: 132px;
+      margin: 0 auto 24px;
+    }
+
+    .avatar-wrap::before {
+      content: "";
+      position: absolute;
+      inset: -22px;
+      z-index: -1;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, .13), transparent 68%);
+      filter: blur(8px);
+    }
+
+    .avatar-wrap::after {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 255, 255, .22);
+      animation: spin 26s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .16);
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(.92) contrast(1.04);
+      box-shadow: 0 18px 45px -18px rgba(0, 0, 0, .9);
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1), filter .5s ease;
+    }
+
+    .avatar-wrap:hover .avatar {
+      transform: scale(1.035);
+      filter: saturate(1) contrast(1.06);
+    }
+
+    .status {
+      position: absolute;
+      right: 5px;
+      bottom: 9px;
+      width: 19px;
+      height: 19px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--line-strong);
+    }
+
+    .status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #e8e8e4;
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, .45);
+      animation: ping 3.2s ease-out infinite;
+    }
+
+    @keyframes ping {
+      0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, .4); }
+      60%, 100% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+    }
+
+    .name {
+      position: relative;
+      display: inline-block;
+      margin: 0;
+      font-size: clamp(36px, 10vw, 46px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -.045em;
+      color: var(--fg);
+      text-shadow: 0 0 46px rgba(255, 255, 255, .18);
+    }
+
+    .name::before,
+    .name::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .name:hover::before {
+      opacity: .85;
+      color: #c9c9c3;
+      clip-path: inset(0 0 52% 0);
+      animation: glitch-a .42s steps(2, end) infinite;
+    }
+
+    .name:hover::after {
+      opacity: .7;
+      color: #8b8b85;
+      clip-path: inset(48% 0 0 0);
+      animation: glitch-b .5s steps(2, end) infinite;
+    }
+
+    @keyframes glitch-a {
+      0%, 100% { transform: translate(-2px, -2px); }
+      33% { transform: translate(3px, -1px); }
+      66% { transform: translate(-3px, 1px); }
+    }
+
+    @keyframes glitch-b {
+      0%, 100% { transform: translate(2px, 2px); }
+      33% { transform: translate(-3px, 1px); }
+      66% { transform: translate(3px, -1px); }
+    }
+
+    .tagline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 14px 0 0;
+      font-size: 11.5px;
+      letter-spacing: .13em;
+      color: var(--muted);
+    }
+
+    .tagline .note {
+      font-size: 10px;
+      color: var(--dim);
+      transform: translateY(-1px);
+    }
+
+    .tagline .slash { color: var(--dim); }
+
+    /* ---------- socials ---------- */
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 32px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .social {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, .012));
+      color: var(--muted);
+      font: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      transition:
+        transform .24s cubic-bezier(.2, .8, .2, 1),
+        color .24s ease,
+        border-color .24s ease,
+        background .24s ease,
+        box-shadow .24s ease;
+    }
+
+    .social svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+      transition: transform .24s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .social:hover,
+    .social:focus-visible {
+      transform: translateY(-4px);
+      color: #fff;
+      border-color: var(--line-strong);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .085), rgba(255, 255, 255, .02));
+      box-shadow: 0 16px 34px -18px rgba(255, 255, 255, .35);
+      outline: none;
+    }
+
+    .social:hover svg,
+    .social:focus-visible svg { transform: scale(1.08); }
+
+    .social:active { transform: translateY(-1px) scale(.985); }
+
+    .social.is-copied {
+      color: var(--fg);
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .foot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 26px 0 0;
+      font-size: 10px;
+      letter-spacing: .14em;
+      color: var(--dim);
+    }
+
+    /* ---------- mute button ---------- */
+
+    .mute {
+      position: fixed;
+      right: clamp(16px, 3vw, 26px);
+      bottom: clamp(16px, 3vh, 26px);
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 50%;
+      background: rgba(12, 12, 12, .72);
+      -webkit-backdrop-filter: blur(14px) saturate(120%);
+      backdrop-filter: blur(14px) saturate(120%);
+      color: var(--muted);
+      cursor: pointer;
+      transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
+    }
+
+    .mute:hover,
+    .mute:focus-visible {
+      color: var(--fg);
+      border-color: rgba(255, 255, 255, .32);
+      background: rgba(22, 22, 22, .85);
+      outline: none;
+    }
+
+    .mute:active { transform: scale(.92); }
+
+    .mute svg {
+      display: block;
+      width: 19px;
+      height: 19px;
+    }
+
+    .mute .icon-off { display: none; }
+    .mute.is-muted .icon-on { display: none; }
+    .mute.is-muted .icon-off { display: block; }
+
+    /* ---------- intro ---------- */
+
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background: var(--bg);
+      text-align: center;
+      cursor: pointer;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .7s ease, visibility .7s ease;
+    }
+
+    .intro::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(680px 480px at 50% 42%, rgba(255, 255, 255, .055), transparent 68%);
+      pointer-events: none;
+    }
+
+    .intro::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .05;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .intro.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro-inner {
+      position: relative;
+      z-index: 1;
+      animation: rise .9s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .intro-kicker {
+      margin: 0 0 10px;
+      font-size: 10px;
+      letter-spacing: .42em;
+      color: var(--dim);
+    }
+
+    .intro-name {
+      margin: 0;
+      font-size: clamp(38px, 12vw, 58px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+
+    .intro-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 26px 0 0;
+      padding: 10px 18px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .03);
+      color: var(--muted);
+      font: inherit;
+      font-size: 10.5px;
+      letter-spacing: .18em;
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: color .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .intro-btn:hover,
+    .intro-btn:focus-visible {
+      color: var(--fg);
+      border-color: rgba(255, 255, 255, .38);
+      background: rgba(255, 255, 255, .06);
+      outline: none;
+    }
+
+    .intro-caret {
+      width: 6px;
+      height: 11px;
+      background: var(--fg);
+      animation: blink 1.05s steps(2, start) infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .intro-note {
+      margin: 22px 0 0;
+      font-size: 9.5px;
+      letter-spacing: .16em;
+      color: var(--dim);
+    }
+
+    /* ---------- toast ---------- */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(clamp(16px, 3vh, 26px) + 64px);
+      z-index: 60;
+      padding: 9px 15px;
+      border-radius: 10px;
+      background: rgba(244, 244, 241, .95);
+      color: #080808;
+      font-size: 10.5px;
+      letter-spacing: .08em;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 10px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* ---------- misc ---------- */
+
+    .yt-shell {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 320px;
+      height: 180px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 420px) {
+      .avatar-wrap { width: 116px; height: 116px; margin-bottom: 22px; }
+      .socials { gap: 10px; }
+      .social { width: 54px; height: 54px; border-radius: 14px; }
+      .social svg { width: 22px; height: 22px; }
+      .mute { width: 42px; height: 42px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .profile, .intro-inner { animation: none; }
+      .noise { animation: none; }
+    }
+  </style>
+</head>
+<body class="intro-open">
+  <div class="bg" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <main class="profile" aria-label="erdem profil sayfası">
+    <div class="avatar-wrap">
+      <img class="avatar" src="assets/avatar.jpg" alt="erdem profil fotoğrafı" width="736" height="550">
+      <span class="status" aria-hidden="true"></span>
+    </div>
+
+    <h1 class="name" data-text="erdem" aria-label="erdem">erdem</h1>
+
+    <p class="tagline">
+      <span class="note" aria-hidden="true">&#9834;</span>
+      <span>panchiko</span>
+      <span class="slash" aria-hidden="true">—</span>
+      <span>deathmetal</span>
+    </p>
+
+    <ul class="socials">
+      <li>
+        <a class="social" href="https://www.instagram.com/erdemvya/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a class="social" href="https://github.com/erdemvya" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <button class="social social-copy" type="button" data-copy="erdqc." aria-label="Discord kullanıcı adını kopyala: erdqc." title="Discord — erdqc.">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.317 4.3698a19.7913 19.7913 0 0 0-4.8851-1.5152.0741.0741 0 0 0-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 0 0-.0785-.037 19.7363 19.7363 0 0 0-4.8852 1.515.0699.0699 0 0 0-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 0 0 .0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 0 0 .0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 0 0-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 0 1-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 0 1 .0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 0 1 .0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 0 1-.0066.1276 12.2986 12.2986 0 0 1-1.873.8914.0766.0766 0 0 0-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 0 0 .0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 0 0 .0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 0 0-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
+          </svg>
+        </button>
+      </li>
+    </ul>
+
+    <footer class="foot">
+      <span>erdqc.</span>
+    </footer>
+  </main>
+
+  <button class="mute is-muted" id="mute" type="button" aria-pressed="true" aria-label="Sesi aç">
+    <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M11 5 6 9H3v6h3l5 4V5Z"/>
+      <path d="M15.5 8.5a5 5 0 0 1 0 7"/>
+      <path d="M18.5 5.5a9 9 0 0 1 0 13"/>
+    </svg>
+    <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M11 5 6 9H3v6h3l5 4V5Z"/>
+      <path d="m15.5 9.5 5 5m0-5-5 5"/>
+    </svg>
+  </button>
+
+  <div class="intro" id="intro">
+    <div class="intro-inner">
+      <p class="intro-kicker">erdqc.</p>
+      <p class="intro-name">erdem</p>
+      <button class="intro-btn" id="enter" type="button">
+        <span class="intro-caret" aria-hidden="true"></span>
+        click to enter
+      </button>
+      <p class="intro-note">&#9834; panchiko — deathmetal</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="yt-shell" aria-hidden="true"><div id="yt-player"></div></div>
+
+  <noscript>
+    <style>
+      .intro { display: none; }
+      body.intro-open { overflow: auto; }
+      .mute { display: none; }
+    </style>
+  </noscript>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var doc = document.documentElement;
+      var intro = document.getElementById('intro');
+      var enterBtn = document.getElementById('enter');
+      var muteBtn = document.getElementById('mute');
+      var toast = document.getElementById('toast');
+      var copyBtn = document.querySelector('[data-copy]');
+
+      var VIDEO_ID = 'uq7fPNc4djo';
+
+      var player = null;
+      var started = false;
+      var muted = true;
+      var toastTimer = null;
+      var soundCheck = null;
+
+      /* pointer glow */
+      var raf = 0;
+      window.addEventListener('pointermove', function (event) {
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = 0;
+          doc.style.setProperty('--mx', event.clientX + 'px');
+          doc.style.setProperty('--my', event.clientY + 'px');
+        });
+      }, { passive: true });
+
+      /* music */
+      function syncMute() {
+        muteBtn.classList.toggle('is-muted', muted);
+        muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+        muteBtn.setAttribute('aria-label', muted ? 'Sesi aç' : 'Sesi kapat');
+      }
+
+      function playMuted() {
+        if (!player) return;
+        muted = true;
+        try {
+          player.mute();
+          player.playVideo();
+        } catch (error) { /* yok say */ }
+        syncMute();
+      }
+
+      function playWithSound() {
+        if (!player) return;
+        muted = false;
+        try {
+          player.unMute();
+          player.setVolume(45);
+          player.playVideo();
+        } catch (error) { /* player henüz hazır değil */ }
+        syncMute();
+
+        clearTimeout(soundCheck);
+        soundCheck = setTimeout(function () {
+          if (!player || !started) return;
+          var state = player.getPlayerState ? player.getPlayerState() : -1;
+          var isMuted = player.isMuted ? player.isMuted() : false;
+
+          if (state === YT.PlayerState.PLAYING) {
+            if (isMuted) {
+              muted = true;
+              syncMute();
+            }
+            return;
+          }
+          if (state === YT.PlayerState.BUFFERING) return;
+          playMuted();
+        }, 1600);
+      }
+
+      window.onYouTubeIframeAPIReady = function () {
+        player = new YT.Player('yt-player', {
+          videoId: VIDEO_ID,
+          playerVars: {
+            autoplay: 1,
+            mute: 1,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            playsinline: 1,
+            loop: 1,
+            playlist: VIDEO_ID,
+            rel: 0,
+            modestbranding: 1,
+            iv_load_policy: 3
+          },
+          events: {
+            onReady: function () {
+              var frame = player.getIframe ? player.getIframe() : null;
+              if (frame) {
+                frame.setAttribute('tabindex', '-1');
+                frame.setAttribute('aria-hidden', 'true');
+              }
+              if (started) playWithSound();
+            }
+          }
+        });
+      };
+
+      function enter() {
+        if (started) return;
+        started = true;
+        document.body.classList.remove('intro-open');
+        intro.classList.add('is-hidden');
+        try { enterBtn.blur(); } catch (error) { /* yok say */ }
+        playWithSound();
+
+        window.setTimeout(function () {
+          if (intro.parentNode) intro.parentNode.removeChild(intro);
+        }, 750);
+      }
+
+      intro.addEventListener('click', enter);
+      enterBtn.addEventListener('click', enter);
+
+      muteBtn.addEventListener('click', function () {
+        if (!player) {
+          showToast('müzik yükleniyor…');
+          return;
+        }
+
+        if (muted) {
+          playWithSound();
+          return;
+        }
+
+        muted = true;
+        try { player.mute(); } catch (error) { /* yok say */ }
+        syncMute();
+      });
+
+      syncMute();
+
+      /* discord copy */
+      function showToast(text) {
+        toast.textContent = text;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 1900);
+      }
+
+      function legacyCopy(text) {
+        var field = document.createElement('textarea');
+        field.value = text;
+        field.setAttribute('readonly', '');
+        field.style.cssText = 'position:fixed;top:-1000px;left:0;opacity:0;';
+        document.body.appendChild(field);
+        field.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
+        field.remove();
+        return ok;
+      }
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async function () {
+          var value = copyBtn.getAttribute('data-copy') || 'erdqc.';
+          var ok = false;
+
+          try {
+            await navigator.clipboard.writeText(value);
+            ok = true;
+          } catch (error) {
+            ok = legacyCopy(value);
+          }
+
+          showToast(ok ? 'copied  ' + value : value);
+
+          if (ok) {
+            copyBtn.classList.add('is-copied');
+            setTimeout(function () { copyBtn.classList.remove('is-copied'); }, 1500);
+          }
+        });
+      }
+    })();
+  </script>
+  <script src="https://www.youtube.com/iframe_api" async></script>
+</body>
+</html>
